@@ -102,16 +102,19 @@ def main():
 
     response = get_upload_url(vk_access_token, vk_group_id, v)
     upload_url = response['response']['upload_url']
+    
+    try:
+        photo_response = upload_photo(upload_url)
+        server, photo, photo_hash = photo_func['server'], photo_func['photo'], photo_func['hash']
 
-    photo_func = upload_photo(upload_url)
-    server, photo, photo_hash = photo_func['server'], photo_func['photo'], photo_func['hash']
+        album_response = save_photo(vk_access_token, vk_group_id, server, photo, photo_hash, v)
+        media_id, owner_id = album_response['response'][0]['id'], album_response['response'][0]['owner_id']
 
-    album_response = save_photo(vk_access_token, vk_group_id, server, photo, photo_hash, v)
-    media_id, owner_id = album_response['response'][0]['id'], album_response['response'][0]['owner_id']
-
-    attachment = f"photo{owner_id}_{media_id}"
-    from_group = 1
-    publish_photo(vk_access_token, vk_group_id, message, attachment, from_group, v)
+        attachment = f"photo{owner_id}_{media_id}"
+        from_group = 1
+        publish_photo(vk_access_token, vk_group_id, message, attachment, from_group, v)
+    finally:
+        os.remove(filename)
 
 
 if __name__ == '__main__':
