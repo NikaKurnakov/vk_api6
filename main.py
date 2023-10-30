@@ -114,7 +114,7 @@ def main():
         from_group = 1
         publish_photo(vk_access_token, vk_group_id, message, attachment, from_group, v)
     finally:
-        os.remove(filename)
+        os.remove("python.png")
 
 
 if __name__ == '__main__':
